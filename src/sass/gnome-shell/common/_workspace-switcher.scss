@@ -8,11 +8,14 @@
 }
 
 .workspace-switcher {
-  background: transparent;
-  border: none;
-  border-radius: 0;
   padding: 0;
   spacing: $base_spacing * 2;
+  box-shadow: 0 3px 8px 0 rgba(black, 0.15);
+  border-radius: $menu_radius;
+  // margin: $base_margin + 4px 10px 12px;
+  @if $rimless == 'false' {
+    border: 2px solid $primary;
+  }
 }
 
 .ws-switcher-box {
