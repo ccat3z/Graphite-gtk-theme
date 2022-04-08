@@ -22,8 +22,8 @@
 
   // panel menus
   .panel-button {
-    -natural-hpadding: 12px;
-    -minimum-hpadding: 6px;
+    -natural-hpadding: $base_padding;
+    -minimum-hpadding: $base_padding;
     font-weight: bold;
     color: $panel-text-secondary;
     transition-duration: 150ms;
@@ -32,10 +32,23 @@
     border: 2px solid transparent;
 
     &.clock-display {
-      .clock {
-        transition-duration: 150ms;
-        border: 2px solid transparent;
-        border-radius: $circular_radius;
+      -natural-hpadding: 0;
+      -minimum-hpadding: 0;
+
+      .clock-display-box {
+        // Hide message indicator
+        spacing: 0;
+        Gjs_ui_dateMenu_MessagesIndicator {
+          width: 0;
+          height: 0;
+        }
+
+        .clock {
+          transition-duration: 150ms;
+          border: 2px solid transparent;
+          border-radius: $circular_radius;
+          padding: 0 $base_padding * 2 - 2;
+        }
       }
     }
 
