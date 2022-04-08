@@ -39,7 +39,7 @@
     color: $text-secondary;
     text-shadow: none;
     border-radius: $base_radius;
-    margin: 0 $base_padding;
+    margin: 1px $base_padding;
     font-weight: normal;
 
     &:checked {
@@ -49,6 +49,7 @@
       color: on($primary) !important;
       background-color: $primary !important;
       border-radius: $base_radius $base_radius 0 0;
+      margin-bottom: 0;
 
       &:focus, &.hover, &.selected {
         color: on($primary) !important;
