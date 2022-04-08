@@ -10,6 +10,10 @@
   transition-duration: 250ms;
   @include fontsize($font_size - 1);
 
+  > *:first-child {
+    margin-left: $base_padding * 2;
+  }
+
   // the rounded outset corners
   .panel-corner {
     -panel-corner-radius: 0;
