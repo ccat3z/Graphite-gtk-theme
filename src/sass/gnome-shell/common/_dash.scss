@@ -9,6 +9,10 @@ $dash_placeholder_size: 32px;
     width: $dash_placeholder_size;
     height: $dash_placeholder_size;
   }
+
+  .dash-background {
+    background: none;
+  }
 }
 
 // OSD Tooltip
