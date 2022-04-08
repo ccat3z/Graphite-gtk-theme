@@ -119,14 +119,24 @@
     // status area icons
     .system-status-icon {
       icon-size: $base_icon_size;
-      padding: $base_padding - 1px;
-      margin: 0 $base_margin;
+      padding: 0;
+      margin: 0;
       -st-icon-style: symbolic;
     }
 
-    .panel-status-indicators-box .system-status-icon,
-    .panel-status-menu-box .system-status-icon {
-      margin: 0;
+    > .panel-status-indicators-box {
+      > .panel-status-indicators-box {
+        .system-status-icon {
+          margin: 0;
+          padding: 0 $base_padding;
+        }
+
+        &:first-child {
+          .system-status-icon {
+            padding-left: 0;
+          }
+        }
+      }
     }
 
     // app menu icon
