@@ -62,17 +62,35 @@
       }
 
       &:insensitive { color: on($primary, disabled) !important; }
+
+      .popup-menu-icon {
+        color: on($primary) !important;
+      }
     }
 
-    &:focus, &.hover, &.selected {
+    &:hover {
+      .popup-menu-icon {
+          color: on($primary);
+      }
+    }
+
+    &:focus, &.selected {
       color: $text !important;
       background-color: $divider !important;
       transition-duration: 0;
+
+      .popup-menu-icon {
+          color: $text;
+      }
     }
 
     &:active, &.selected:active {
       color: on($primary) !important;
       background-color: $primary !important;
+
+      .popup-menu-icon {
+          color: on($primary);
+      }
     }
 
     &:insensitive { color: $text-secondary-disabled !important; }

@@ -27,4 +27,17 @@ $slide_size: if($compact == 'false', 7px, 6px);
   -barlevel-overdrive-border-color: transparent;
   -barlevel-overdrive-separator-width: 2px;
   -barlevel-border-width: 0;
+
+  .popup-menu-item:hover & {
+    -barlevel-active-background-color: on($primary);
+    -slider-handle-border-color: on($primary);
+    color: $primary;
+  }
+
+  .popup-menu-item:active &,
+  .popup-menu-item:focus & {
+    -barlevel-active-background-color: $slide_active_color;
+    -slider-handle-border-color: $primary;
+    color: $base;
+  }
 }
