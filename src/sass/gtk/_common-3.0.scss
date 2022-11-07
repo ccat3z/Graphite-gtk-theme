@@ -1498,12 +1498,12 @@ treeview.view {
 
   border-left-color: $track; // this is actually the tree lines color,
   border-top-color: $divider; // while this is the grid lines color, better then nothing
-  padding: $space-size / 2;
+  min-height: $medium-size;
 
-  .csd &:not(:selected):not(:hover):not(.progressbar):not(.expander):not(.trough):not(.separator) { background-color: transparent; }
+  window.background.csd &:not(:selected):not(:hover):not(.progressbar):not(.expander):not(.trough):not(.separator) { background-color: transparent; }
 
   // FIXME: Avoid transparency background-color being slightly darker
-  &:selected {
+  &:selected:not(.progressbar):not(.trough) {
     @extend %selected_items;
     background-image: image($overlay-checked);
   }
@@ -3037,6 +3037,14 @@ messagedialog { // Message Dialog styling
     }
   }
 
+  checkbutton.text-button {
+    padding: 2px $space-size * 2 2px $space-size * 4;
+
+    > check {
+      margin-left: 0;
+    }
+  }
+
   &.csd { // rounded bottom border styling for csd version
     &.background {
       // bigger radius for better antialiasing
@@ -3092,11 +3100,6 @@ filechooser {
       border-radius: 0 0 $window-radius 0;
 
       list { background-color: transparent; }
-
-      treeview.view {
-        @extend .view;
-        background-color: transparent;
-      }
     }
 
     > placesview {
@@ -3668,7 +3671,7 @@ decoration {
     @if $rimless == 'true' {
       box-shadow: 0 3px 3px rgba(0, 0, 0, 0.16);
     } @else {
-      box-shadow: 0 3px 3px rgba(0, 0, 0, 0.16);
+      box-shadow: 0 3px 3px rgba(0, 0, 0, 0.16), 0 0 0 2px $primary;
       border: none;
       border-radius: $window-radius $window-radius 0 0;
     }

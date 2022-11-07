@@ -21,7 +21,7 @@ SASSC_OPT="-M -t expanded"
 
 THEME_NAME=Graphite
 THEME_VARIANTS=('' '-purple' '-pink' '-red' '-orange' '-yellow' '-green' '-teal' '-blue')
-COLOR_VARIANTS=('' '-light' '-dark')
+COLOR_VARIANTS=('' '-Light' '-Dark')
 SIZE_VARIANTS=('' '-compact')
 
 if [[ "$(command -v gnome-shell)" ]]; then
@@ -53,6 +53,10 @@ OPTIONS:
   -c, --color VARIANT     Specify color variant(s) [standard|light|dark] (Default: All variants)s)
 
   -s, --size VARIANT      Specify size variant [standard|compact] (Default: standard variants)
+
+  -l, --libadwaita        Install link to gtk4 config for theming libadwaita
+
+  -u, --uninstall         Uninstall themes or link for libadwaita
 
   --tweaks                Specify versions for tweaks [nord|black|darker|rimless|normal]
                           (WORRING: 'nord' and 'darker' can not mix use with 'black'!)
@@ -124,14 +128,14 @@ install() {
   cp -r "${SRC_DIR}/assets/gtk/scalable"                                                     "${THEME_DIR}/gtk-3.0/assets"
   cp -r "${SRC_DIR}/assets/gtk/thumbnail${ELSE_DARK:-}.png"                                  "${THEME_DIR}/gtk-3.0/thumbnail.png"
   sassc $SASSC_OPT "${SRC_DIR}/main/gtk-3.0/gtk${color}.scss"                                "${THEME_DIR}/gtk-3.0/gtk.css"
-  sassc $SASSC_OPT "${SRC_DIR}/main/gtk-3.0/gtk-dark.scss"                                   "${THEME_DIR}/gtk-3.0/gtk-dark.css"
+  sassc $SASSC_OPT "${SRC_DIR}/main/gtk-3.0/gtk-Dark.scss"                                   "${THEME_DIR}/gtk-3.0/gtk-dark.css"
 
   mkdir -p                                                                                   "${THEME_DIR}/gtk-4.0"
   cp -r "${SRC_DIR}/assets/gtk/assets${theme}"                                               "${THEME_DIR}/gtk-4.0/assets"
   cp -r "${SRC_DIR}/assets/gtk/scalable"                                                     "${THEME_DIR}/gtk-4.0/assets"
   cp -r "${SRC_DIR}/assets/gtk/thumbnail${ELSE_DARK:-}.png"                                  "${THEME_DIR}/gtk-4.0/thumbnail.png"
   sassc $SASSC_OPT "${SRC_DIR}/main/gtk-4.0/gtk${color}.scss"                                "${THEME_DIR}/gtk-4.0/gtk.css"
-  sassc $SASSC_OPT "${SRC_DIR}/main/gtk-4.0/gtk-dark.scss"                                   "${THEME_DIR}/gtk-4.0/gtk-dark.css"
+  sassc $SASSC_OPT "${SRC_DIR}/main/gtk-4.0/gtk-Dark.scss"                                   "${THEME_DIR}/gtk-4.0/gtk-dark.css"
 
   mkdir -p                                                                                   "${THEME_DIR}/cinnamon"
   cp -r "${SRC_DIR}/assets/cinnamon/common-assets"                                           "${THEME_DIR}/cinnamon/assets"
@@ -158,16 +162,36 @@ install() {
   cp -r "${SRC_DIR}/main/xfwm4/themerc${ELSE_LIGHT:-}"                                       "${THEME_DIR}-xhdpi/xfwm4/themerc"
 
   mkdir -p                                                                                   "${THEME_DIR}/plank"
-  if [[ "$color" == '-light' ]]; then
-    cp -r "${SRC_DIR}/main/plank/theme-light/"*                                              "${THEME_DIR}/plank"
+  if [[ "$color" == '-Light' ]]; then
+    cp -r "${SRC_DIR}/main/plank/theme-Light/"*                                              "${THEME_DIR}/plank"
   else
-    cp -r "${SRC_DIR}/main/plank/theme-dark/"*                                               "${THEME_DIR}/plank"
+    cp -r "${SRC_DIR}/main/plank/theme-Dark/"*                                               "${THEME_DIR}/plank"
+  fi
+}
+
+clean() {
+  local dest="${1}"
+  local name="${2}"
+  local theme="${3}"
+  local color="${4}"
+  local size="${5}"
+  local type="${6}"
+
+  [[ "${color}" == '-light' ]] && local ELSE_LIGHT="${color}"
+  [[ "${color}" == '-dark' ]] && local ELSE_DARK="${color}"
+
+  local THEME_DIR="${1}/${2}${3}${4}${5}${6}"
+
+  if [[ ${color} != '' && -d ${THEME_DIR} ]]; then
+    rm -rf ${THEME_DIR}
+    echo -e "Find: ${THEME_DIR} ! removing it ..."
   fi
 }
 
 themes=()
 colors=()
 sizes=()
+lcolors=()
 
 while [[ $# -gt 0 ]]; do
   case "${1}" in
@@ -183,20 +207,31 @@ while [[ $# -gt 0 ]]; do
       name="${2}"
       shift 2
       ;;
+    -l|--libadwaita)
+      libadwaita="true"
+      shift
+      ;;
+    -r|--remove|-u|--uninstall)
+      uninstall="true"
+      shift
+      ;;
     -c|--color)
       shift
       for color in "${@}"; do
         case "${color}" in
           standard)
             colors+=("${COLOR_VARIANTS[0]}")
+            lcolors+=("${COLOR_VARIANTS[0]}")
             shift
             ;;
           light)
             colors+=("${COLOR_VARIANTS[1]}")
+            lcolors+=("${COLOR_VARIANTS[1]}")
             shift
             ;;
           dark)
             colors+=("${COLOR_VARIANTS[2]}")
+            lcolors+=("${COLOR_VARIANTS[2]}")
             shift
             ;;
           -*|--*)
@@ -351,6 +386,10 @@ if [[ "${#colors[@]}" -eq 0 ]] ; then
   colors=("${COLOR_VARIANTS[@]}")
 fi
 
+if [[ "${#lcolors[@]}" -eq 0 ]] ; then
+  lcolors=("${COLOR_VARIANTS[1]}")
+fi
+
 if [[ "${#sizes[@]}" -eq 0 ]] ; then
   sizes=("${SIZE_VARIANTS[0]}")
 fi
@@ -479,17 +518,101 @@ theme_tweaks() {
   fi
 }
 
+uninstall_link() {
+  rm -rf "${HOME}/.config/gtk-4.0"/{assets,gtk.css,gtk-dark.css}
+}
+
+link_libadwaita() {
+  local dest="${1}"
+  local name="${2}"
+  local theme="${3}"
+  local lcolor="${4}"
+  local size="${5}"
+  local ctype="${6}"
+
+  local THEME_DIR="${1}/${2}${3}${4}${5}${6}"
+
+  echo -e "\nLink '$THEME_DIR/gtk-4.0' to '${HOME}/.config/gtk-4.0' for libadwaita..."
+
+  mkdir -p                                                                      "${HOME}/.config/gtk-4.0"
+  ln -sf "${THEME_DIR}/gtk-4.0/assets"                                          "${HOME}/.config/gtk-4.0/assets"
+  ln -sf "${THEME_DIR}/gtk-4.0/gtk.css"                                         "${HOME}/.config/gtk-4.0/gtk.css"
+  ln -sf "${THEME_DIR}/gtk-4.0/gtk-dark.css"                                    "${HOME}/.config/gtk-4.0/gtk-dark.css"
+}
+
+uninstall() {
+  local dest="${1}"
+  local name="${2}"
+  local theme="${3}"
+  local color="${4}"
+  local size="${5}"
+  local ctype="${6}"
+
+  local THEME_DIR="${1}/${2}${3}${4}${5}${6}"
+
+  if [[ -d "${THEME_DIR}" ]]; then
+    echo -e "Uninstall ${THEME_DIR}... "
+    rm -rf "${THEME_DIR}"
+  fi
+}
+
+link_theme() {
+  for theme in "${themes[@]}"; do
+    for color in "${lcolors[@]}"; do
+      for size in "${sizes[@]}"; do
+        link_libadwaita "${dest:-$DEST_DIR}" "${_name:-$THEME_NAME}" "$theme" "$color" "$size" "$ctype"
+      done
+    done
+  done
+}
+
+clean_theme() {
+  for theme in "${THEME_VARIANTS[@]}"; do
+    for color in '' '-light' '-dark'; do
+      for size in "${SIZE_VARIANTS[@]}"; do
+        for type in '' '-nord'; do
+          clean "${dest:-$DEST_DIR}" "${name:-$THEME_NAME}" "$theme" "$color" "$size" "$type"
+        done
+      done
+    done
+  done
+}
+
+uninstall_theme() {
+  for theme in "${themes[@]}"; do
+    for color in "${colors[@]}"; do
+      for size in "${sizes[@]}"; do
+        uninstall "${dest:-$DEST_DIR}" "${_name:-$THEME_NAME}" "$theme" "$color" "$size" "$ctype"
+      done
+    done
+  done
+}
+
 install_theme() {
   for theme in "${themes[@]}"; do
     for color in "${colors[@]}"; do
       for size in "${sizes[@]}"; do
+        cp -rf ${SRC_DIR}/sass/_tweaks.scss ${SRC_DIR}/sass/_tweaks-temp.scss
         install "${dest:-$DEST_DIR}" "${name:-$THEME_NAME}" "$theme" "$color" "$size" "$ctype"
       done
     done
   done
 }
 
-install_package && sass_temp && gnome_shell_version && install_theme
+if [[ "$uninstall" == 'true' ]]; then
+  if [[ "$libadwaita" == 'true' ]]; then
+    echo -e "\nUninstall ${HOME}/.config/gtk-4.0 links ..."
+    uninstall_link
+  else
+    echo && uninstall_theme && uninstall_link
+  fi
+else
+   clean_theme && install_package && sass_temp && gnome_shell_version && install_theme
+
+   if [[ "$libadwaita" == 'true' ]]; then
+     uninstall_link && link_theme
+   fi
+fi
 
 echo
 echo Done.
