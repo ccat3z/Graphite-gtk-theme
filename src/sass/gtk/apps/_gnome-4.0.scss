@@ -221,8 +221,12 @@
     &:first-child { margin-left: 0; }
   }
 
-  > menubutton > button {
-    border-radius: $circular-radius;
+  > menubutton {
+    margin: 0;
+
+    > button {
+      border-radius: $circular-radius;
+    }
   }
 }
 
@@ -299,6 +303,15 @@ datechooser.view {
     min-height: 24px;
     min-width: 24px;
     padding: $space-size;
+  }
+}
+
+menubutton.sources-button {
+  margin: 0;
+
+  > button {
+    border-radius: 0;
+    margin: 0;
   }
 }
 
@@ -643,14 +656,6 @@ window.dialog {
       > row {
         &:first-child, &:last-child { border-radius: 0; }
       }
-    }
-  }
-}
-
-window.aboutdialog {
-  stack scrolledwindow.frame > {
-    &, viewport.view {
-      border-radius: $window-radius - $space-size;
     }
   }
 }

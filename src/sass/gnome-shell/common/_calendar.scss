@@ -42,8 +42,8 @@
   border: 0 solid $border;
   padding: 0 $base_padding * 2;
 
-  &:ltr { margin-right: $base_margin * 2; border-left-width: 0; }
-  &:rtl { margin-left: $base_margin * 2; border-right-width: 0; }
+  &:ltr { margin-right: 0; border-left-width: 0; }
+  &:rtl { margin-left: 0; border-right-width: 0; }
 
   .datemenu-displays-section { padding-bottom: 0; }
 
@@ -102,7 +102,7 @@
   border: none;
   box-shadow: none;
   background-color: transparent;
-  padding: 0 $base_padding !important;
+  padding: 0 $base_padding / 2 !important;
   margin: 0 !important;
   text-shadow: none;
   border-radius: $menu_radius;
@@ -115,8 +115,6 @@
     text-align: center;
     text-shadow: none;
     @include fontsize($font_size + 1);
-
-    &:focus {}
   }
 
   // prev/next month icons
@@ -131,12 +129,13 @@
   }
 
   .pager-button {
-    width: $item_size;
-    height: $item_size;
-    margin: 2px;
+    width: $item_size !important;
+    height: $item_size !important;
+    margin: 2px !important;
     border-radius: $circular_radius;
     background-color: transparent;
     color: $text;
+
     &:hover, &:focus { background-color: $divider; }
     &:active { background-color: $track; }
   }
@@ -144,16 +143,20 @@
   .calendar-day-base {
     @include fontsize($font_size - 1);
     text-align: center;
-    width: $item_size + 2px;
-    height: $item_size + 2px;
-    padding: 0;
-    margin: 2px;
+    width: $item_size + 2px !important;
+    height: $item_size + 2px !important;
+    padding: 0 !important;
+    margin: 2px !important;
     border-radius: $circular_radius;
     color: $text-secondary;
     border: none;
     font-feature-settings: "tnum";
 
-    &:hover, &:focus { background-color: $divider; }
+    &:hover, &:focus {
+      background-color: $divider;
+      box-shadow: none;
+      outline: none;
+    }
 
     &:active, &:selected {
       color: $text;
@@ -179,8 +182,6 @@
   .calendar-day-left {
     border-left-width: 0;
   }
-
-  .calendar-work-day {}
 
   .calendar-nonwork-day {
     color: $text-disabled;
@@ -233,7 +234,7 @@
   .calendar-week-number {
     width: $item_size - 6px;
     height: $item_size - 12px;
-    margin: 6px $base_margin/2 !important;
+    margin: 6px $base_margin / 2 !important;
     padding: 0 0;
     border-radius: $base_radius;
     background-color: $fill;
