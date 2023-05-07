@@ -48,7 +48,7 @@
       box-shadow: none;
       color: on($primary) !important;
       background-color: $primary !important;
-      border-radius: $base_radius $base_radius 0 0;
+      border-radius: $base_radius $base_radius 0 0 !important;
       margin-bottom: 0;
 
       &:focus, &:hover, &.selected {
@@ -81,6 +81,11 @@
     &:active, &.selected:active {
       color: $text !important;
       background-color: $track !important;
+
+      @if $colorful == 'true' {
+        background-color: $primary !important;
+        color: on($primary) !important;
+      }
     }
 
     &:insensitive { color: $text-secondary-disabled !important; }
@@ -90,7 +95,7 @@
     border: none;
     box-shadow: none;
     margin: 0;
-    border-radius: 0 0 $base_radius $base_radius;
+    border-radius: 0 0 $base_radius $base_radius !important;
 
     @if $sidebar == 'styled' {
       background-color: $primary !important;
@@ -103,6 +108,7 @@
     .popup-menu-item {
       border-radius: 0;
       margin: 0;
+      background-color: transparent !important;
 
       @if $sidebar == 'styled' {
         color: on($primary, secondary) !important;
@@ -123,7 +129,7 @@
 
     .popup-menu-section {
       &:last-child .popup-menu-item:last-child {
-        border-radius: 0 0 $base_radius $base_radius;
+        border-radius: 0 0 $base_radius $base_radius !important;
       }
     }
   }

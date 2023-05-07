@@ -340,9 +340,6 @@ entry {
         &:disabled { @include entry(disabled, $e_color); }
       }
     }
-
-    .osd & {
-    }
   }
 
   progress {
@@ -656,8 +653,6 @@ button {
 
         &:checked { background-color: rgba($b_color, 0.3); }
       }
-
-      .osd & { }
     }
   }
 
@@ -745,10 +740,6 @@ button.color {
   min-height: $small-size;
   min-width: $small-size;
   padding: $space-size;
-
-  colorswatch:only-child {
-    // &, overlay { border-radius: 0; }
-  }
 }
 
 
@@ -1356,7 +1347,8 @@ headerbar {
   // add vertical margins to common widget on the headerbar to avoid them spanning the whole height
   entry,
   spinbutton,
-  button {
+  button,
+  stackswitcher {
     margin-top: $space-size;
     margin-bottom: $space-size;
   }
@@ -2778,7 +2770,8 @@ actionbar > revealer > box {
   background-color: $base;
   background-clip: border-box;
 
-  .background.csd box.vertical > & {
+  .background.csd box.vertical > &,
+  .background.csd box.vertical > revealer > & {
     border-radius: 0 0 $window-radius $window-radius;
   }
 
@@ -3201,11 +3194,6 @@ stacksidebar.sidebar {
 
 separator.sidebar {
   background-color: $divider;
-
-  &.selection-mode,
-  .selection-mode & {
-    // background-color: $divider;
-  }
 }
 
 
@@ -3457,12 +3445,6 @@ tooltip {
   border-radius: $corner-radius/2;
   box-shadow: none; // otherwise it gets inherited by windowframe.csd
 
-  &:not(.csd):not(.unity-csd) {
-    // border: 1px solid $divider;
-    // border-radius: $corner-radius + 1px;
-    // background-clip: $background-clip-extra;
-  }
-
   // FIXME: we need a border or tooltips vanish on black background.
   decoration { background-color: transparent; }
 
@@ -3470,11 +3452,6 @@ tooltip {
     margin: -6px; // Remove hard-coded 6px margin
     min-height: 32px - 4px * 2;
     padding: 4px 8px;
-  }
-
-  * {
-    // workaround for Eclipse.
-    // do not include any declaration here.
   }
 }
 
@@ -3566,9 +3543,6 @@ colorswatch {
     overlay { box-shadow: none; }
   }
 
-  row:selected & {
-  }
-
   &#editor-color-sample {
     border-radius: $menu-radius;
 
@@ -3616,14 +3590,13 @@ colorchooser .popover.osd {
  * Window Decorations *
  **********************/
 decoration {
-  transition: $transition-shadow;
+  transition: none;
+  box-shadow: $shadow-z16, 0 0 50px transparent;
 
   @if $rimless == 'true' {
     border-radius: $window-radius;
-    box-shadow: $shadow-z16, 0 0 36px transparent;
   } @else {
     border-radius: $window-radius + 2px;
-    box-shadow: $shadow-z4, 0 0 16px transparent;
     border: 2px solid $primary;
     background-clip: border-box;
   }
@@ -3631,18 +3604,17 @@ decoration {
   // FIXME rationalize shadows
 
   // this is used for the resize cursor area
-  margin: 8px;
+  margin: 10px;
 
   &:backdrop {
+    transition: $transition-shadow;
     // the transparent shadow here is to enforce that the shadow extents don't
     // change when we go to backdrop, to prevent jumping windows.
     // The biggest shadow should be in the same order then in the active state
     // or the jumping will happen during the transition.
+    box-shadow: $shadow-z4, 0 0 50px transparent;
 
-    @if $rimless == 'true' {
-      box-shadow: $shadow-z4, 0 0 36px transparent;
-    } @else {
-      box-shadow: $shadow-z1, 0 0 16px transparent;
+    @if $rimless == 'false' {
       border: 2px solid $primary;
       background-clip: border-box;
     }
@@ -3660,6 +3632,8 @@ decoration {
 
   // server-side decorations as used by mutter
   .ssd & {
+    margin: 0;
+
     @if $rimless == 'true' {
       box-shadow: 0 3px 3px rgba(0, 0, 0, 0.16);
     } @else {
@@ -3832,12 +3806,12 @@ stackswitcher {
  *************/
 // Outline for low res icons
 .lowres-icon {
-  // -gtk-icon-shadow: none;
+  -gtk-icon-shadow: none;
 }
 
 // Drapshadow for large icons
 .icon-dropshadow {
-  // -gtk-icon-shadow: none;
+  -gtk-icon-shadow: none;
 }
 
 

@@ -34,15 +34,37 @@
   border: none;
   @extend %button;
 
+  @if $colorful == 'true' {
+    &:active {
+      background-color: $primary;
+      color: on($primary);
+    }
+  }
+
   .popup-menu & {
     @extend %flat_button;
+
+    @if $colorful == 'true' {
+      &:active {
+        background-color: $primary;
+        color: on($primary);
+      }
+    }
   }
 }
 
 .icon-button {
-  @extend %button; // same style as buttons
   border-radius: $circular_radius;
   padding: $base_padding;
+  @extend %button; // same style as buttons
+  background-color: $fill;
+
+  @if $colorful == 'true' {
+    &:active {
+      background-color: $primary;
+      color: on($primary);
+    }
+  }
 
   StIcon {
     icon-size: $base_icon_size !important;
