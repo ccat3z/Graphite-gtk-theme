@@ -19,8 +19,8 @@
 
 .quick-toggle, .quick-menu-toggle {
   border-radius: $base_radius;
-  min-width: if($compact == 'false', 12em, 11em);
-  max-width: if($compact == 'false', 12em, 11em);
+  min-width: if($compact == 'false', 15em, 11em);
+  max-width: if($compact == 'false', 15em, 11em);
   min-height: 26px + $base_padding * 3 !important;
   border: none;
 }
