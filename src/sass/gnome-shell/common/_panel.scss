@@ -267,13 +267,6 @@
     }
   }
 
-  // Input indicators
-  Gjs_status_keyboard_InputSourceIndicator.panel-button, // Ibus
-  Gjs_appindicatorsupport_rgcjonas_gmail_com_indicatorStatusIcon_AppIndicatorsIndicatorStatusIcon.panel-button { // Fcitx
-    -natural-hpadding: $base_padding * 3 !important;
-    -minimum-hpadding: $base_padding * 3 !important;
-  }
-
   @mixin colorful_button($theme_color: $primary) {
     &, &:hover { color: $theme_color; }
 
