@@ -152,6 +152,11 @@ $background:                            if($variant == 'light', background(a), b
 $surface:                               if($variant == 'light', background(a), background(h));
 $base:                                  if($variant == 'light', background(a), background(g));
 $base-alt:                              if($variant == 'light', background(b), background(f));
+$sidebg:                                if($variant == 'light', background(b), background(f));
+
+@if $sidebar == 'styled' {
+  $sidebg:                              if($variant == 'light', background(h), background(d));
+}
 
 $login-background:                      if($variant == 'light', background(d), background(g)); // For gnome-shell
 
@@ -166,8 +171,8 @@ $popover:                               $base;
 $panel-solid:                           if($topbar == 'dark', background(e), background(c)); // for Unity panel which doesn't allow translucent colors
 $panel:                                 rgba($panel-solid, $panel_opacity);
 
-$button:                                if($variant == 'dark', on($background, fill), on($background, secondary-fill));
-$entry:                                 if($variant == 'dark', on($background, fill), on($background, secondary-fill));
+$button:                                on($background, fill);
+$entry:                                 on($background, fill);
 
 //
 // Misc colors
@@ -185,6 +190,7 @@ $destructive:                           $error;
 
 $frame:                                 if($variant == 'light', rgba(black, 0.12), rgba(black, 0.20));
 $border:                                if($variant == 'light', rgba(black, 0.12), rgba(white, 0.12));
+$side-border:                           if($variant == 'light', rgba(black, 0.1), rgba(white, 0.1));
 $solid-border:                          if($variant == 'light', darken($background, 12%), lighten($background, 12%));
 $border-alt:                            rgba(black, 0.16); // darker border color for Chrome and Firefox
 
@@ -211,6 +217,7 @@ $text-secondary-disabled:               on($background, secondary-disabled);
 $track:                                 on($background, track);
 $track-disabled:                        on($background, track-disabled);
 $divider:                               on($background, divider);
+$secondary-fill:                        on($background, secondary-fill);
 $fill:                                  on($background, fill);
 
 $titlebar-text:                         on($titlebar);

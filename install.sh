@@ -79,7 +79,7 @@ OPTIONS:
 
   -n, --name NAME         Specify theme name (Default: $THEME_NAME)
 
-  -t, --theme VARIANT     Specify theme color variant(s) [default|purple|pink|red|orange|yellow|green|teal|blue|all] (Default: blue)
+  -t, --theme VARIANT     Specify theme color variant(s) [default|purple|pink|red|orange|yellow|green|teal|blue|all] (Default: grey)
 
   -c, --color VARIANT     Specify color variant(s) [standard|light|dark] (Default: All variants)s)
 
@@ -93,13 +93,13 @@ OPTIONS:
 
   --tweaks                Specify versions for tweaks [nord|black|darker|rimless|normal]
                           (WORRING: 'nord' and 'darker' can not mix use with 'black'!)
-                          1. nord:     Nord colorscheme version
-                          2. black:    Blackness colorscheme version
-                          3. darker:   Darker (default|nord) color version (black option can not be darker)
-                          4. rimless:  Remove the 2px outline about windows and menus
-                          5. normal:   Normal sidebar style (Nautilus)
-                          6. float:    Float gnome-shell panel style
-                          7. colorful: Colorful gnome-shell panel style
+                          1. nord       Nord colorscheme version
+                          2. black      Blackness colorscheme version
+                          3. darker     Darker (default|nord) color version (black option can not be darker)
+                          4. rimless    Remove the 2px outline about windows and menus
+                          5. normal     Normal sidebar style (Nautilus)
+                          6. float      Float gnome-shell panel style
+                          7. colorful   Colorful gnome-shell panel style
 
   -h, --help              Show help
 EOF

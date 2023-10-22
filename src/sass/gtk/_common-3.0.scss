@@ -308,7 +308,7 @@ entry {
 
       &:hover, &:active { color: $text; }
 
-      &:disabled { color: $text-disabled; }
+      &:disabled { color: $text-secondary-disabled; }
 
       &.left {
         margin-left: ($medium-size - 16px) / 2 - 8px;
@@ -1799,6 +1799,7 @@ popover.background {
     @extend %button-flat;
 
     min-height: 32px;
+    min-width: 48px;
     padding: 0 8px;
     border-radius: $corner-radius;
 
