@@ -278,6 +278,14 @@
     }
   }
 
+  // Input indicators
+  Gjs_status_keyboard_InputSourceIndicator.panel-button, // Ibus
+  Gjs_appindicatorsupport_rgcjonas_gmail_com_indicatorStatusIcon_IndicatorStatusIcon.panel-button,
+  Gjs_appindicatorsupport_rgcjonas_gmail_com_indicatorStatusIcon_AppIndicatorsIndicatorStatusIcon.panel-button { // Fcitx
+    -natural-hpadding: $base_padding * 3 !important;
+    -minimum-hpadding: $base_padding * 3 !important;
+  }
+
   @mixin colorful_button($theme_color: $primary) {
     &, &:hover { color: $theme_color; }
 
@@ -315,6 +323,22 @@
       @include colorful_button($theme_teal_color);
     }
 
+    .panel-button#panelActivities {
+      &, &:hover {
+        .workspace-dot {
+          background-color: $theme_teal_color;
+        }
+      }
+
+      &:active, &:focus, &:checked {
+        &, &:hover {
+          .workspace-dot {
+            background-color: on($theme_teal_color);
+          }
+        }
+      }
+    }
+
     // Application Menu button
     Gjs_apps-menu_gnome-shell-extensions_gcampax_github_com_extension_ApplicationsButton.panel-button {
       @include colorful_button($theme_green_color);
@@ -331,6 +355,7 @@
     }
 
     // Gpaste button
+    ClipboardIndicator.panel-button,
     Gjs_GPaste_gnome-shell-extensions_gnome_org_indicator_GPasteIndicator.panel-button {
       @include colorful_button($theme_green_color);
     }

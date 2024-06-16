@@ -7,7 +7,6 @@
   border: none;
   box-shadow: none;
   text-shadow: none;
-  padding: $base_padding $base_padding * 1.5;
 
   &:hover, &:focus {
     color: $text;
@@ -42,6 +41,10 @@
   padding: $base_margin;
 }
 
+.datemenu-popover {
+  border-radius: $base_radius + $base_padding + $base_margin !important;
+}
+
 // Calendar menu side column
 .datemenu-calendar-column {
   spacing: $base_spacing;
@@ -57,13 +60,6 @@
   .datemenu-displays-box {
     spacing: $base_spacing;
   }
-}
-
-.world-clocks-header,
-.weather-header,
-.events-section-title {
-  color: $text-secondary;
-  font-weight: bold;
 }
 
 .datemenu-today-button,
@@ -120,18 +116,19 @@
 
   // month
   .calendar-month-label {
+    @extend %heading;
     padding: $base_padding 0;
-    color: $text-secondary;
+    color: $text-secondary !important;
     font-weight: bold;
     text-align: center;
     text-shadow: none;
-    @include fontsize($font_size + 1);
+    background-color: transparent;
   }
 
   // prev/next month icons
   .calendar-change-month-back,
   .calendar-change-month-forward {
-    padding: 0 0 !important;
+    padding: 0 !important;
     margin: ($base_padding / 2) 0 !important;
 
     StIcon {
@@ -146,13 +143,13 @@
     border-radius: $circular_radius;
     background-color: transparent;
     color: $text;
+    box-shadow: none !important;
 
-    &:hover, &:focus { background-color: $divider; }
-    &:active { background-color: $track; }
+    &:hover, &:focus { background-color: $divider; box-shadow: none !important; }
+    &:active { background-color: $track; box-shadow: none !important; }
   }
 
-  .calendar-day,
-  .calendar-day-base {
+  .calendar-day {
     @include fontsize($font_size - 1);
     text-align: center;
     width: $item_size + 2px !important;
@@ -163,6 +160,7 @@
     color: $text-secondary !important;
     border: none;
     font-feature-settings: "tnum";
+    background-color: transparent;
 
     &:hover, &:focus {
       background-color: $divider;
@@ -183,12 +181,6 @@
     &.calendar-weekend {
       color: $text-disabled !important;
       // font-weight: normal;
-    }
-
-    &.calendar-day-heading {  //day of week heading
-      margin-top: 1em;
-      color: $text-disabled;
-      @include fontsize($font_size - 1);
     }
   }
 
@@ -247,8 +239,7 @@
     }
   }
 
-  .calendar-other-month,
-  .calendar-other-month-day {
+  .calendar-other-month {
     color: $text-secondary-disabled !important;
     font-weight: normal;
 
@@ -257,16 +248,30 @@
     }
   }
 
+  // day of week heading
+  .calendar-day-heading {
+    @extend %numeric;
+    @extend %smaller;
+    font-weight: bold;
+    text-align: center;
+    margin: $base_margin;
+    padding: $base_padding * 0.5 $base_padding;
+    border-radius: $base_radius;
+    background-color: transparent;
+    color: $text;
+  }
+
   .calendar-week-number {
     width: $item_size - 6px;
     height: $item_size - 12px;
     margin: 6px $base_margin / 2 !important;
-    padding: 0 0;
+    padding: 0;
     border-radius: $base_radius;
     background-color: $fill;
     color: $text-disabled;
-    font-size: inherit;
+    @extend %smaller;
     font-weight: bold;
+    font-feature-settings: "tnum";
     text-align: center;
   }
 }
@@ -276,7 +281,7 @@
 .events-button {
   @extend %popover_bubble;
   padding: $base_padding * 2 !important;
-  margin: $base_padding 0 0 !important;
+  margin: $base_margin 0 2px !important;
 }
 
 // Events

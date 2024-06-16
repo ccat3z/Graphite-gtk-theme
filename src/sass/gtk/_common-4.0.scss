@@ -1336,6 +1336,7 @@ toolbar {
     border-radius: $corner-radius;
     box-shadow: $shadow-z4, inset 0 1px highlight($surface);
     background-color: $surface;
+    color: $text;
 
     &:backdrop { box-shadow: $shadow-z2, inset 0 1px highlight($surface); }
 
@@ -1667,12 +1668,12 @@ headerbar {
   .maximized &,
   .fullscreen & {
     border-radius: 0;
+
+    @if $rimless == 'true' { box-shadow: none; }
   }
 
   &.default-decoration {
     min-height: $medium-size;
-    // padding: $space-size;
-    border-radius: $window-radius $window-radius 0 0;
 
     windowcontrols {
       button,
@@ -1695,6 +1696,10 @@ headerbar {
 
 // Gnome >= 45.0
 .top-bar {
+  box-shadow: none;
+  background: none;
+  border: none;
+
   .collapse-spacing {
     padding: 0;
   }
@@ -1991,20 +1996,6 @@ popover.menu {
         background-color: $overlay-selected;
       }
     }
-  }
-
-  arrow.left,
-  radio.left,
-  check.left {
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  arrow.right,
-  radio.right,
-  check.right {
-    margin-left: 0;
-    margin-right: 0;
   }
 }
 
@@ -2378,20 +2369,14 @@ notebook {
 
 tabbar {
   .box {
-    min-height: $medium-size;
-  }
+    border: none;
+    background-color: $fill;
+    padding: 0;
+    margin: $space-size / 2;
+    border-radius: $modal-radius + $space-size;
+    box-shadow: none;
 
-  &:not(.inline) {
-    .box {
-      border: none;
-      background-color: $fill;
-      padding: 0;
-      margin: $space-size / 2;
-      border-radius: $modal-radius + $space-size;
-      box-shadow: none;
-    }
-
-    &:backdrop .box {
+    &:backdrop {
       background-color: $fill;
 
       > scrolledwindow,
@@ -2402,33 +2387,32 @@ tabbar {
     }
   }
 
-  scrolledwindow:not(.pinned) > tabbox {
-    padding: 0;
-
-    > tabboxchild {
-      padding: $space-size / 2 0;
-      margin: 0 -3px;
-
-      > tab {
-        margin: $space-size / 2;
-      }
-    }
+  tabbox {
+    padding: $space-size 0;
 
     tab {
       @extend %tabs_tab;
     }
-  }
 
-  scrolledwindow.pinned > tabbox {
-    padding: 0;
+    > separator {
+      margin-top: 9px;
+      margin-bottom: 9px;
 
-    > tabboxchild {
-      padding: $space-size / 2 0;
-      margin: 0;
+      &.hidden {
+        opacity: 0;
+      }
+    }
 
-      > tab {
-        margin: $space-size / 2;
-        padding: $space-size / 2;
+    > revealer > indicator {
+      min-width: 2px;
+      border-radius: 2px;
+      margin: 3px 6px;
+      background: gtkalpha($primary, 0.5);
+    }
+
+    &.single-tab tab {
+      &, &:hover, &:active {
+        background-color: transparent;
       }
     }
   }
@@ -2831,7 +2815,7 @@ radio {
 
   &:not(:hover):focus { box-shadow: none; }
 
-  popover.menu & {
+  popover & {
     transition: none;
     margin: 0; // this is a workaround for a menu check/radio size allocation issue
     padding: 0;
@@ -3388,10 +3372,6 @@ separator:not(.spacer) {
   &:not(:last-child) {
     border-bottom: 1px solid $border;
   }
-
-  &:focus {
-    box-shadow: inset 0 0 0 1000px $overlay-focus;
-  }
 }
 
 listview,
@@ -3421,6 +3401,7 @@ list {
 
     > row {
       @extend %circular_row;
+      box-shadow: none;
 
       &.expander {
         list {
@@ -3459,6 +3440,7 @@ listview.view {
 row {
   color: $text-secondary;
   background-clip: padding-box;
+  outline: none;
 
   label.subtitle {
     font-size: smaller;
@@ -3484,22 +3466,25 @@ row {
   @at-root %row_activatable, &.activatable {
     transition: $transition;
     outline: none;
-    box-shadow: inset 0 0 0 9999px transparent;
+    background-color: transparent;
 
-    &:focus {
-      box-shadow: inset 0 0 0 9999px $overlay-focus;
+    &:focus, &:focus-visible {
+      background-color: transparent;
+      box-shadow: none;
+      outline: none;
     }
 
     &:hover {
       transition: $transition,
-                  box-shadow 0ms;
-      box-shadow: inset 0 0 0 9999px $overlay-hover;
+                  background-color 0ms;
+      background-color: $overlay-hover;
     }
 
     &.has-open-popup, // this is for indicathing which row generated a popover see https://bugzilla.gnome.org/show_bug.cgi?id=754411
     &:active {
       transition: $transition;
-      box-shadow: inset 0 0 0 9999px $overlay-active;
+      background-color: $overlay-active;
+      box-shadow: none;
     }
 
     button.circular {
@@ -3508,7 +3493,7 @@ row {
   }
 
   button &.activatable {
-    &:focus, &:hover, &:active { box-shadow: none; }
+    &:focus, &:hover, &:active { background-color: transparent; }
   }
 
   button:checked &.activatable {
@@ -3518,15 +3503,11 @@ row {
   &:selected {
     @extend %selected_items;
 
-    image,
-    label { color: $text; }
-
     button image,
     button label { color: inherit; }
 
     &:disabled {
-      image,
-      label { color: $text-disabled; }
+      color: $text-disabled;
     }
   }
 }
@@ -3730,10 +3711,36 @@ window.dialog.message { // Message Dialog styling
 
         &:not(:disabled) { color: $primary; }
 
-        // &.suggested-action:not(:disabled) { color: $suggested; }
+        &.suggested-action:not(:disabled) { color: $suggested; }
 
         &.destructive-action:not(:disabled) { color: $destructive; }
       }
+    }
+  }
+}
+
+window.background.messagedialog {
+  .response-area {
+    padding: $space-size;
+    border-spacing: $space-size;
+
+    > button {
+      @extend %button-flat;
+
+      &, &:first-child, &:last-child { border-radius: $corner-radius; }
+
+      &:not(:last-child) { margin-right: $space-size; }
+
+      &:not(:disabled) { color: $primary; }
+
+      &.suggested-action:not(:disabled) { color: $suggested; }
+
+      &.destructive-action:not(:disabled) { color: $destructive; }
+    }
+
+    > separator {
+      border: none;
+      background: none;
     }
   }
 }
@@ -3826,12 +3833,13 @@ stacksidebar {
   + separator.vertical,
   separator.horizontal { @extend %hide_separators; }
 
-  leaflet.unfolded > box > &.sidebar {
+  leaflet.unfolded > box > &.sidebar,
+  .sidebar-pane &.sidebar {
     border: none;
   }
 
   list {
-    padding: $space-size - 2px 0;
+    padding: $space-size;
     // background-color: $base; // This should not be necessary, but the parent stacksidebar ignores background-color.
   }
 
@@ -3839,17 +3847,15 @@ stacksidebar {
     min-height: $small-size;
     padding: $space-size $space-size * 1.5;
     border-radius: $corner-radius;
-    margin: 2px $space-size;
+    margin: 0;
+
+    + row {
+      margin-top: $space-size / 2;
+    }
 
     &:selected {
       @extend %selected_items_primary;
       font-weight: 500;
-    }
-
-    > label {
-      padding-left: $space-size;
-      padding-right: $space-size;
-      color: inherit;
     }
 
     &.needs-attention > label { @extend %needs-attention; }
@@ -3872,7 +3878,7 @@ separator.sidebar {
  **********************/
 
 .navigation-sidebar {
-  padding: $space-size - 2px 0; //only vertical padding. horizontal row size would clip
+  padding: $space-size; //only vertical padding. horizontal row size would clip
   border-right: none;
 
   &, &.view {
@@ -3884,17 +3890,21 @@ separator.sidebar {
     min-height: $small-size;
     padding: $space-size $space-size * 1.5;
     border-radius: $corner-radius;
-    margin: 2px $space-size;
+    margin: 0;
+
+    + row { margin-top: $space-size / 2; }
 
     &:hover,
     &:focus-visible:focus-within {
       background-color: $overlay-hover;
     }
 
+    &:active {
+      background-color: $overlay-active;
+    }
+
     &:selected {
       @extend %selected_items_primary;
-
-      label, image { color: on($primary); }
 
       &:hover {
         background-color: lighten($primary, 5%);
@@ -3933,9 +3943,7 @@ placessidebar {
 
     image.sidebar-icon {
       transition: color $duration $ease-out;
-      color: $text-secondary;
-    
-      &:disabled { color: $text-secondary-disabled; }
+      color: inherit;
 
       &:dir(ltr) { padding-right: 8px; }
       &:dir(rtl) { padding-left: 8px; }
@@ -3957,24 +3965,19 @@ placessidebar {
 
     &.sidebar-new-bookmark-row {
       color: $primary;
-
-      image.sidebar-icon { color: $primary; }
     }
 
     &:selected {
       font-weight: 500;
       @extend %selected_items_primary;
 
-      label.sidebar-label,
-      image.sidebar-icon { color: on($primary); }
-
       button.sidebar-button { @extend %sidebar-flat-button; }
     }
 
     &:drop(active) {
       transition: $transition,
-                  box-shadow 0ms;
-      box-shadow: inset 0 0 0 9999px $overlay-hover;
+                  background-color 0ms;
+      background-color: $overlay-hover;
     }
   }
 }
@@ -4060,6 +4063,10 @@ paned {
   }
 }
 
+/****************
+ * Sidebar Pane *
+ ****************/
+
 %sidebar-style {
   background-color: $sidebg;
   color: on($sidebg);
@@ -4143,33 +4150,35 @@ paned {
 }
 
 %sidebar-row {
-  &, label, image { color: on($sidebg, secondary); }
+  color: on($sidebg, secondary);
 
   &:hover, &:active {
-    &, label, image { color: on($sidebg); }
+    color: on($sidebg);
   }
 
   &:selected {
     background-color: on($sidebg, secondary);
-
-    &, label, image { color: $sidebg; }
+    color: $sidebg;
 
     &:hover { background-color: on($sidebg); }
   }
 
   &:disabled {
-    &, label, image { color: on($sidebg, secondary-disabled); }
+    color: on($sidebg, secondary-disabled);
   }
 }
 
-/****************
- * Sidebar Pane *
- ****************/
-
 .sidebar-pane {
-  background-color: $sidebg;
-  color: on($sidebg);
+  @if $variant == 'light' and $topbar == 'dark' {
+    background-color: $titlebar;
+    color: $titlebar-text;
+  } @else {
+    background-color: if($sidebar == 'normal', $base-alt, $background);
+    color: $text;
+  }
 
+  .sidebar,
+  .toolbar,
   placessidebar,
   .navigation-sidebar,
   searchbar > revealer > box {
@@ -4190,12 +4199,6 @@ paned {
     }
   }
 
-  .navigation-sidebar {
-    > separator {
-      background-color: transparent;
-    }
-  }
-
   @if $variant == 'light' and $topbar == 'dark' and $sidebar == 'normal' {
     headerbar {
       color: $text-secondary;
@@ -4211,7 +4214,7 @@ paned {
 
         &:active { @include button(active); }
 
-        &:disabled { @include button(disabled); }
+        &:disabled { @include button(flat-disabled); }
 
         &:checked { @include button(checked); }
 
@@ -4223,21 +4226,77 @@ paned {
   }
 
   @if $sidebar == 'styled' {
-    button:not(.suggested-action):not(.destructive-action) { @extend %sidebar-button; }
+    toolbarview > scrolledwindow,
+    toolbarview > placessidebar > scrolledwindow,
+    toolbarview > stacksidebar.sidebar > scrolledwindow {
+      @if $topbar == 'dark' and $variant == 'light' {
+        margin: 0;
+        background-color: transparent;
+        color: $titlebar-text-secondary;
+      } @else {
+        background-color: $sidebg;
+        color: on($sidebg);
+        margin: 0 0 $menu-radius 0;
+        border-radius: 0 $menu-radius $menu-radius 0;
+      }
 
-    .dim-label { color: on($sidebg, disabled); }
+      .navigation-sidebar {
+        background: none;
 
-    .navigation-sidebar {
-      > row {
-        @extend %sidebar-row;
-  
-        button { @extend %sidebar-flat-button; }
+        > row {
+          @extend %sidebar-row;
+    
+          button { @extend %sidebar-flat-button; }
+        }
+
+        .dim-label { color: on($sidebg, disabled); }
+
+        > separator { background: none; }
+      }
+
+      > overshoot {
+        &.top { @include overshoot(top, $c: on($sidebg, disabled)); }
+    
+        &.bottom { @include overshoot(bottom, $c: on($sidebg, disabled)); }
+    
+        &.left { @include overshoot(left, $c: on($sidebg, disabled)); }
+    
+        &.right { @include overshoot(right, $c: on($sidebg, disabled)); }
+      }
+
+      scrollbar {
+        background-color: transparent;
+
+        > range > trough {
+          background-color: on($sidebg, divider);
+
+          > slider {
+            background-color: on($sidebg, disabled);
+      
+            &:hover { background-color: on($sidebg, secondary); }
+      
+            &:active { background-color: on($sidebg); }
+      
+            &:disabled { background-color: on($sidebg, secondary-disabled); }
+          }
+        }
+
+        &.overlay-indicator {
+          &:not(.dragging):not(.hovering) {
+            > range > trough > slider {
+              border: none;
+            }
+          }
+
+          &.dragging,
+          &.hovering {
+            background-color: transparent;
+          }
+        }
       }
     }
-  
+
     placessidebar {
-      @extend %sidebar-style;
-  
       .navigation-sidebar > row {
         &,
         label.sidebar-label,
@@ -4268,71 +4327,67 @@ paned {
         }
       }
     }
+  }
 
-    headerbar {
-      @extend %sidebar-style;
-      box-shadow: none;
-  
-      entry { @extend %sidebar-entry; }
-  
-      button:not(.suggested-action):not(.destructive-action) { @extend %sidebar-flat-button; }
-    }
-  
-    searchbar {
-      > revealer > box {
-        @extend %sidebar-style;
-        border: none;
-  
-        entry { @extend %sidebar-entry; }
-  
-        button:not(.suggested-action):not(.destructive-action) { @extend %sidebar-flat-button; }
-      }
-    }
-  
-    scrollbar {
-      background-color: transparent;
-  
-      > range > trough {
-        > slider {
-          background-color: on($sidebg, disabled);
-    
-          &:hover { background-color: on($sidebg, secondary); }
-    
-          &:active { background-color: on($sidebg); }
-    
-          &:disabled { background-color: on($sidebg, secondary-disabled); }
-        }
-      }
-  
-      &.overlay-indicator {
-        &:not(.dragging):not(.hovering) {
-          > range > trough > slider {
-            border: none;
-          }
-        }
-  
-        &.dragging,
-        &.hovering {
-          background-color: transparent;
-        }
-      }
-    }
-  
-    scrolledwindow {
-      > overshoot {
-        &.top { @include overshoot(top, $c: on($sidebg, disabled)); }
-    
-        &.bottom { @include overshoot(bottom, $c: on($sidebg, disabled)); }
-    
-        &.left { @include overshoot(left, $c: on($sidebg, disabled)); }
-    
-        &.right { @include overshoot(right, $c: on($sidebg, disabled)); }
-      }
+  @if $variant == 'light' and $topbar == 'dark' {
+    entry {
+      @extend %sidebar-entry;
     }
   }
 }
 
 .content-pane {
+  @if $variant == 'light' and $topbar == 'dark' {
+    window:not(.nautilus-window) & headerbar {
+      color: $text-secondary;
+
+      &:backdrop { color: $text-secondary-disabled; }
+
+      button:not(.suggested-action):not(.destructive-action) {
+        @include button(flat-normal);
+
+        &:focus { @include button(focus); }
+
+        &:hover { @include button(hover); }
+
+        &:active { @include button(active); }
+
+        &:disabled { @include button(flat-disabled); }
+
+        &:checked { @include button(checked); }
+
+        &:checked:hover { @include button(checked-hover); }
+
+        &:checked:disabled { @include button(checked-disabled); }
+      }
+
+      entry {
+        color: $text-secondary;
+        background-color: $fill;
+
+        &:focus-within {
+          color: $text;
+          box-shadow: inset 0 0 0 2px $primary;
+
+          image { color: $text; }
+        }
+
+        &:disabled {
+          background-color: $fill;
+          color: $text-disabled;
+        }
+
+        image {
+          color: $text-secondary;
+      
+          &:hover, &:active { color: $text; }
+      
+          &:disabled { color: $text-disabled; }
+        }
+      }
+    }
+  }
+
   headerbar {
     @if $rimless == 'true' {
       background-color: transparent;
@@ -4394,6 +4449,64 @@ paned {
       }
     }
   }
+
+  @if $sidebar == 'styled' {
+    toolbarview.undershoot-top scrolledwindow {
+      @include undershoot(top, $c: $side-frame, $style: 'round');
+    }
+  
+    toolbarview.undershoot-bottom scrolledwindow {
+      @include undershoot(bottom, $c: $side-frame, $style: 'round');
+    }
+  
+    scrolledwindow {
+      &.undershoot-top {
+        @include undershoot(top, $c: $side-frame, $style: 'round');
+      }
+  
+      &.undershoot-bottom {
+        @include undershoot(bottom, $c: $side-frame, $style: 'round');
+      }
+  
+      &.undershoot-start {
+        &:dir(ltr) { @include undershoot(left, $c: $side-frame, $style: 'round'); }
+        &:dir(rtl) { @include undershoot(right, $c: $side-frame, $style: 'round'); }
+      }
+  
+      &.undershoot-end {
+        &:dir(ltr) { @include undershoot(right, $c: $side-frame, $style: 'round'); }
+        &:dir(rtl) { @include undershoot(left, $c: $side-frame, $style: 'round'); }
+      }
+    }
+  } @else {
+    toolbarview.undershoot-top scrolledwindow {
+      @include undershoot(top);
+    }
+  
+    toolbarview.undershoot-bottom scrolledwindow {
+      @include undershoot(bottom);
+    }
+  
+    scrolledwindow {
+      &.undershoot-top {
+        @include undershoot(top);
+      }
+  
+      &.undershoot-bottom {
+        @include undershoot(bottom)
+      }
+  
+      &.undershoot-start {
+        &:dir(ltr) { @include undershoot(left); }
+        &:dir(rtl) { @include undershoot(right); }
+      }
+  
+      &.undershoot-end {
+        &:dir(ltr) { @include undershoot(right); }
+        &:dir(rtl) { @include undershoot(left); }
+      }
+    }
+  }
 }
 
 .sidebar-pane,
@@ -4406,7 +4519,9 @@ paned {
   overlay-split-view {
     @include transition-shadows($frame);
   }
+}
 
+.content-pane {
   toolbarview.undershoot-top scrolledwindow {
     @include undershoot(top);
   }

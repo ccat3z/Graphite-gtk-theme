@@ -31,7 +31,9 @@ SIZE_VARIANTS=('' '-compact')
 if [[ "$(command -v gnome-shell)" ]]; then
   gnome-shell --version
   SHELL_VERSION="$(gnome-shell --version | cut -d ' ' -f 3 | cut -d . -f -1)"
-  if [[ "${SHELL_VERSION:-}" -ge "44" ]]; then
+  if [[ "${SHELL_VERSION:-}" -ge "46" ]]; then
+    GS_VERSION="46-0"
+  elif [[ "${SHELL_VERSION:-}" -ge "44" ]]; then
     GS_VERSION="44-0"
   elif [[ "${SHELL_VERSION:-}" -ge "42" ]]; then
     GS_VERSION="42-0"
@@ -42,7 +44,7 @@ if [[ "$(command -v gnome-shell)" ]]; then
   fi
   else
     echo "'gnome-shell' not found, using styles for last gnome-shell version available."
-    GS_VERSION="44-0"
+    GS_VERSION="46-0"
 fi
 
 #  Check command avalibility
@@ -113,8 +115,8 @@ install() {
   local size="${5}"
   local ctype="${6}"
 
-  [[ "${color}" == '-Light' ]] && local ELSE_LIGHT="${color}"
-  [[ "${color}" == '-Dark' ]] && local ELSE_DARK="${color}"
+  [[ "${color}" == '-Light' ]] && local ELSE_LIGHT="${color}" && local icon_color="-light"
+  [[ "${color}" == '-Dark' ]] && local ELSE_DARK="${color}" && local icon_color="-dark"
 
   local THEME_DIR="${1}/${2}${3}${4}${5}${6}"
 
@@ -135,7 +137,7 @@ install() {
   echo "[X-GNOME-Metatheme]" >>                                                              "${THEME_DIR}/index.theme"
   echo "GtkTheme=${2}${3}${4}${5}${6}" >>                                                    "${THEME_DIR}/index.theme"
   echo "MetacityTheme=${2}${3}${4}${5}${6}" >>                                               "${THEME_DIR}/index.theme"
-  echo "IconTheme=Tela-circle${ELSE_DARK:-}" >>                                              "${THEME_DIR}/index.theme"
+  echo "IconTheme=Tela-circle${icon_color}" >>                                               "${THEME_DIR}/index.theme"
   echo "CursorTheme=${2}-cursors" >>                                                         "${THEME_DIR}/index.theme"
   echo "ButtonLayout=close,minimize,maximize:menu" >>                                        "${THEME_DIR}/index.theme"
 
@@ -161,14 +163,14 @@ install() {
   mkdir -p                                                                                   "${THEME_DIR}/gtk-3.0"
   cp -r "${SRC_DIR}/assets/gtk/assets${theme}"                                               "${THEME_DIR}/gtk-3.0/assets"
   cp -r "${SRC_DIR}/assets/gtk/scalable"                                                     "${THEME_DIR}/gtk-3.0/assets"
-  cp -r "${SRC_DIR}/assets/gtk/thumbnail${ELSE_DARK:-}.png"                                  "${THEME_DIR}/gtk-3.0/thumbnail.png"
+  cp -r "${SRC_DIR}/assets/gtk/thumbnail${theme}${ELSE_DARK:-}.png"                          "${THEME_DIR}/gtk-3.0/thumbnail.png"
   sassc $SASSC_OPT "${SRC_DIR}/main/gtk-3.0/gtk${color}.scss"                                "${THEME_DIR}/gtk-3.0/gtk.css"
   sassc $SASSC_OPT "${SRC_DIR}/main/gtk-3.0/gtk-Dark.scss"                                   "${THEME_DIR}/gtk-3.0/gtk-dark.css"
 
   mkdir -p                                                                                   "${THEME_DIR}/gtk-4.0"
   cp -r "${SRC_DIR}/assets/gtk/assets${theme}"                                               "${THEME_DIR}/gtk-4.0/assets"
   cp -r "${SRC_DIR}/assets/gtk/scalable"                                                     "${THEME_DIR}/gtk-4.0/assets"
-  cp -r "${SRC_DIR}/assets/gtk/thumbnail${ELSE_DARK:-}.png"                                  "${THEME_DIR}/gtk-4.0/thumbnail.png"
+  cp -r "${SRC_DIR}/assets/gtk/thumbnail${theme}${ELSE_DARK:-}.png"                          "${THEME_DIR}/gtk-4.0/thumbnail.png"
   sassc $SASSC_OPT "${SRC_DIR}/main/gtk-4.0/gtk${color}.scss"                                "${THEME_DIR}/gtk-4.0/gtk.css"
   sassc $SASSC_OPT "${SRC_DIR}/main/gtk-4.0/gtk-Dark.scss"                                   "${THEME_DIR}/gtk-4.0/gtk-dark.css"
 
@@ -619,7 +621,7 @@ colorful_panel() {
 gnome_shell_version() {
   sed -i "/\widgets/s/40-0/${GS_VERSION}/" ${SRC_DIR}/sass/gnome-shell/_common-temp.scss
 
-  if [[ "${GS_VERSION}" == '3-28' ]]; then
+  if [[ "${GS_VERSION}" == '3-28' || "${GS_VERSION}" == '46-0' ]]; then
     sed -i "/\extensions/s/40-0/${GS_VERSION}/" ${SRC_DIR}/sass/gnome-shell/_common-temp.scss
   fi
 }
@@ -657,6 +659,8 @@ theme_color() {
 }
 
 theme_tweaks() {
+  cp -rf ${SRC_DIR}/sass/_tweaks.scss ${SRC_DIR}/sass/_tweaks-temp.scss
+
   if [[ "$accent" = "true" ]] ; then
     theme_color
   fi
@@ -768,7 +772,6 @@ install_theme() {
   for theme in "${themes[@]}"; do
     for color in "${colors[@]}"; do
       for size in "${sizes[@]}"; do
-        cp -rf ${SRC_DIR}/sass/_tweaks.scss ${SRC_DIR}/sass/_tweaks-temp.scss
         install "${dest:-$DEST_DIR}" "${name:-$THEME_NAME}" "$theme" "$color" "$size" "$ctype"
       done
     done
